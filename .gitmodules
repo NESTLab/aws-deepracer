@@ -1,0 +1,6 @@
+[submodule "deepracer_nodes/larsll-deepracer-imu-pkg"]
+	path = deepracer_nodes/larsll-deepracer-imu-pkg
+	url = https://github.com/larsll/larsll-deepracer-imu-pkg.git
+[submodule "deepracer_nodes/BMI160-i2c"]
+	path = deepracer_nodes/BMI160-i2c
+	url = https://github.com/larsll/BMI160-i2c.git
