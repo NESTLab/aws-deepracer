@@ -37,7 +37,7 @@ do
     yes "" | sudo apt --fix-broken install # yes allows for acceptance of default values
 done
 
-sudo apt install ros-foxy-navigation2 ros-foxy-nav2-bringup -qy
+sudo apt install ros-foxy-navigation2 ros-foxy-nav2-bringup ros-foxy-imu-tools -qy # dependencies
 
 
 # Install the AWS DeepRacer ROS 2 packages
@@ -47,8 +47,8 @@ cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes/BMI160-i2c
 pip install .
 
 cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes/larsll-deepracer-imu-pkg
-pip install smbus2
-rosws update
+sudo rosdep init
+rosdep update
 rosdep install -i --from-path . --rosdistro foxy -y
 
 source /opt/ros/foxy/setup.bash 
@@ -56,7 +56,7 @@ cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes
 rosws update
 
 cd ~/deepracer_nav2_ws/aws-deepracer/ && \
-colcon build --packages-select deepracer_interfaces_pkg deepracer_bringup cmdvel_to_servo_pkg enable_deepracer_nav_pkg rf2o_laser_odometry rplidar_ros camera_pkg servo_pkg
+colcon build --packages-select deepracer_interfaces_pkg deepracer_bringup cmdvel_to_servo_pkg enable_deepracer_nav_pkg rf2o_laser_odometry rplidar_ros camera_pkg servo_pkg imu_pkg
 
 
 # Set up userspace access to camera
@@ -94,6 +94,11 @@ EOF
 cat <<EOF | sudo tee /etc/udev/rules.d/99-custom-pwm.rules
 SUBSYSTEM=="pwm", KERNEL=="pwmchip0", ACTION=="add", PROGRAM="/usr/local/bin/udev-pwm-permissions.sh"
 EOF
+
+
+# Set up userspace access to IMU
+loginfo "YELLOWB" "Setting up access to IMU..."
+sudo usermod -aG i2c deepracer # the i2c group already has access, so just add the `deepracer` user
 
 
 # Adding source files in .bashrc
