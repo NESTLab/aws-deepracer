@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Setup color output macro
+### Setup color output macro ###
 loginfo() {
     GREEN="\033[0;32m"
     GREENB="\033[1;32m"
@@ -32,12 +32,8 @@ loginfo "YELLOWB" "Updating and upgrading packages..."
 sudo apt update -y
 
 sudo apt-mark hold rsyslog # the `config` package by Intel (`dpkg -l` description: "deepcam configuration install package.") causes conflicts with the `rsyslog` package. This is because the `config` packages also writes to `/etc/logrotate.d/rsyslog`.
-
-for (( i=0; i<3; i++ )) # (need to upgrade and fix broken multiple times to ensure that dependencies are all up-to-date)
-do
-    sudo apt upgrade -qy
-    yes "" | sudo apt --fix-broken install # yes allows for acceptance of default values
-done
+export DEBIAN_FRONTEND=noninteractive && sudo apt upgrade # so that it accepts default values
+unset DEBIAN_FRONTEND
 
 sudo apt install ros-foxy-navigation2 ros-foxy-nav2-bringup ros-foxy-imu-tools -qy # dependencies
 
@@ -61,7 +57,9 @@ rosdep install -i --from-path . --rosdistro foxy -y
 cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes
 rosws update
 cd ~/deepracer_nav2_ws/aws-deepracer/ && \
-colcon build --packages-select deepracer_interfaces_pkg deepracer_bringup cmdvel_to_servo_pkg enable_deepracer_nav_pkg rf2o_laser_odometry rplidar_ros camera_pkg servo_pkg imu_pkg
+    colcon build --packages-select deepracer_interfaces_pkg deepracer_bringup \
+    cmdvel_to_servo_pkg enable_deepracer_nav_pkg rf2o_laser_odometry rplidar_ros \
+    camera_pkg servo_pkg imu_pkg
 
 
 ### Set up userspace access to camera ###

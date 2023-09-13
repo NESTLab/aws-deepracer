@@ -1,19 +1,14 @@
 # AWS DeepRacer (NESTLab Fork)
-
-<p align="center">
-<img src="/media/deepracer_circle_sticker.png" width="250" height="250" >
-</p>
-
 ## Overview
 This repository provides instructions and packages to setup a new AWS DeepRacer such that you can use it to run ROS 2 nodes and &mdash; optionally &mdash; ARGoS controllers. The target user for this repo is anyone with access to NESTLab resources, such as an AWS DeepRacer robot, the NESTLab WiFi (can be changed to a different network) and so on.
 
 Specific changes have been implemented to the code base originally provided by [aws-deepracer](https://github.com/aws-deepracer/aws-deepracer). **Please follow the instructions provided here to properly setup the AWS DeepRacer for ROS 2 and ARGoS support before attempting the instructions provided in the [original README](original_readme.md).** The instructions here will allow you to run your ROS 2 nodes without needing `root` access (unlike the original code).
 
-## Requirements
-- A new AWS DeepRacer device (if required, you can do a factory reset according to [these steps](https://docs.aws.amazon.com/deepracer/latest/developerguide/deepracer-ubuntu-update.html))
+## Setup Requirements
+- A new AWS DeepRacer device - *if required, you can do a factory reset according to [these steps](https://docs.aws.amazon.com/deepracer/latest/developerguide/deepracer-ubuntu-update.html#deepracer-ubuntu-update-preparation)*
 - Access to the [NESTLab wiki](https://www.nestlab.net/wiki/nestlab)
-- Access to the NESTLab local WiFi network
-- A Ubuntu machine (*the instructions here have not been tested with other OS so proceed at your own risk*)
+- Access to the NESTLab local WiFi network - *this can be substituted with another WiFi network you have access to*
+- A Ubuntu machine - *the instructions here have not been tested with other OS so proceed at your own risk*
 
 ## Instructions
 To setup the AWS DeepRacer, there are 3 main steps: [Preliminary Setup](#preliminary-setup), [ROS 2 Setup](#ros-2-setup), and [ARGoS setup](#argos-setup). You *must* complete at least the first 2 steps to run any ROS 2 nodes on the vehicle. The third step is optional if you do not need ARGoS support.
@@ -59,8 +54,13 @@ For this subsection, you need to connect to the vehicle via SSH.
     ```
 
 ### ARGoS Setup
-You can skip this subsection if you intend to only use the AWS DeepRacers with ROS 2 without ARGoS support.
-**WORK-IN-PROGRESS**
+You can skip this subsection if you intend to only use the AWS DeepRacers with ROS 2 without ARGoS support. Before proceeding, ensure that the [argos3-deepracer plugin is installed (WORK-IN-PROGRESS)](https://github.com/NESTLab/argos3-deepracer) on your machine.
+
+Connect to the vehicle via SSH, then run the `initialize_argos.sh` script. This will install ARGoS and the `argos3-deepracer` plugin on the vehicle. **Do not run this script on your machine.**
+```
+cd /home/deepracer/
+./initialize_argos.sh
+```
 
 ## Notes
 - When following the instructions on the official AWS DeepRacer repositories, *avoid running the code as `root`*. The instructions above have been created to ensure that no `root` access is needed ever to run the ROS 2 nodes. If you have permission issues running the ROS 2 nodes (`servo_node`, `imu_node`, `camera_node` etc.) without `root` access, please open an issue.
