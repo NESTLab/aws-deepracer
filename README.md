@@ -7,7 +7,7 @@
 ## Overview
 This repository provides instructions and packages to setup a new AWS DeepRacer such that you can use it to run ROS 2 nodes and -- optionally -- ARGoS controllers. The target user for this repo is anyone with access to NESTLab resources, such as an AWS DeepRacer robot, the NESTLab WiFi router (can be modified) and so on.
 
-Specific changes have been implemented to the code base originally provided by [aws-deepracer](https://github.com/aws-deepracer/aws-deepracer). Please follow the instructions provided here to properly setup the AWS DeepRacer for ROS 2 and ARGoS support before attempting the instructions provided in the [original README](original_readme.md).
+Specific changes have been implemented to the code base originally provided by [aws-deepracer](https://github.com/aws-deepracer/aws-deepracer). **Please follow the instructions provided here to properly setup the AWS DeepRacer for ROS 2 and ARGoS support before attempting the instructions provided in the [original README](original_readme.md).** The instructions here will allow you to run your ROS 2 nodes without needing `root` access (unlike the original code).
 
 ## Requirements
 - A new AWS DeepRacer device (if required, you can do a factory reset according to [these steps](https://docs.aws.amazon.com/deepracer/latest/developerguide/deepracer-ubuntu-update.html))
@@ -38,11 +38,11 @@ If the vehicle has an IP address set up already and you can log in with SSH, you
 ### ROS 2 Setup
 For this subsection, you need to connect to the vehicle via SSH.
 
-1. Once connected, clone this repository on the vehicle in the `deepracer_ros2_ws` directory:
+1. Once connected, clone this repository on the vehicle in the `deepracer_nav2_ws` directory:
     ```
-    mkdir -p /home/deepracer/deepracer_ros2_ws
-    cd /home/deepracer/deepracer_ros2_ws
-    git clone https://github.com/NESTLab/aws-deepracer.git
+    mkdir -p /home/deepracer/deepracer_nav2_ws
+    cd /home/deepracer/deepracer_nav2_ws
+    git clone --recurse-submodules https://github.com/NESTLab/aws-deepracer.git
     cd /home/deepraceraws-deepracer/
     ```
 
@@ -63,4 +63,4 @@ You can skip this subsection if you intend to only use the AWS DeepRacers with R
 
 ## Notes
 - When following the instructions on the official AWS DeepRacer repositories, avoid running the code as `root`. The instructions above have been created to ensure that no `root` access is needed to run the ROS 2 nodes.
-- It is known that the vehicles come with some ROS 2 packages in the `/opt/aws/deepracer` directory already. However, some of them are outdated With that, I decided to just clone the latest appropriate versions and build them from source.
+- It is known that the vehicles come with some ROS 2 packages in the `/opt/aws/deepracer` directory already. However, some of them are outdated so it's easier to clone the latest appropriate versions and build them from source.

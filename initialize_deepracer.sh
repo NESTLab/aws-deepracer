@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Setup color output macro
 loginfo() {
@@ -41,6 +41,7 @@ sudo apt install ros-foxy-navigation2 ros-foxy-nav2-bringup ros-foxy-imu-tools -
 
 
 # Install the AWS DeepRacer ROS 2 packages
+loginfo "YELLOWB" "Installing ROS 2 packages for the AWS DeepRacer..."
 cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes && ./install_dependencies.sh
 
 cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes/BMI160-i2c
