@@ -8,8 +8,13 @@ loginfo() {
     YELLOWB="\033[1;33m"
     RESET="\033[0m"
 
-    echo -e "${!1}APPTAINER BUILD:    ${2}${RESET}"
+    echo -e "${!1}DEEPRACER INITIALIZATION:    ${2}${RESET}"
 }
+
+
+### Run in non-interactive mode ###
+export DEBIAN_FRONTEND=noninteractive
+
 
 ### Terminate on errors ###
 set -e
@@ -32,15 +37,19 @@ loginfo "YELLOWB" "Updating and upgrading packages..."
 sudo apt update -y
 
 sudo apt-mark hold rsyslog # the `config` package by Intel (`dpkg -l` description: "deepcam configuration install package.") causes conflicts with the `rsyslog` package. This is because the `config` packages also writes to `/etc/logrotate.d/rsyslog`.
-export DEBIAN_FRONTEND=noninteractive && sudo apt upgrade # so that it accepts default values
-unset DEBIAN_FRONTEND
 
-sudo apt install ros-foxy-navigation2 ros-foxy-nav2-bringup ros-foxy-imu-tools -qy # dependencies
+sudo apt upgrade -qy -o Dpkg::Options::="--force-confdef" # so that it chooses the default option when it comes to configuration file conflicts
+
+sudo apt install ros-foxy-navigation2 ros-foxy-nav2-bringup ros-foxy-imu-tools -qy # install dependencies
 
 
 ### Install the AWS DeepRacer ROS 2 packages ###
 loginfo "YELLOWB" "Installing ROS 2 packages for the AWS DeepRacer..."
 cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes && ./install_dependencies.sh
+
+# Ignore the files when building (they're needed for simulation only)
+touch /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_description/COLCON_IGNORE
+touch /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_gazebo/COLCON_IGNORE
 
 # Install the IMU I2C driver
 cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes/BMI160-i2c
@@ -56,10 +65,7 @@ rosdep install -i --from-path . --rosdistro foxy -y
 # Install the ROS 2 packages
 cd /home/deepracer/deepracer_nav2_ws/aws-deepracer/deepracer_nodes
 rosws update
-cd ~/deepracer_nav2_ws/aws-deepracer/ && \
-    colcon build --packages-select deepracer_interfaces_pkg deepracer_bringup \
-    cmdvel_to_servo_pkg enable_deepracer_nav_pkg rf2o_laser_odometry rplidar_ros \
-    camera_pkg servo_pkg imu_pkg
+cd ~/deepracer_nav2_ws/aws-deepracer/ && colcon build
 
 
 ### Set up userspace access to camera ###

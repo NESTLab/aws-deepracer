@@ -87,19 +87,26 @@ def generate_launch_description():
             name='enable_deepracer_nav_node'
             ),
 
+        # launch_ros.actions.Node(
+        #         package='rf2o_laser_odometry',
+        #         executable='rf2o_laser_odometry_node',
+        #         name='rf2o_laser_odometry',
+        #         output='screen',
+        #         parameters=[{
+        #             'laser_scan_topic': '/scan',
+        #             'odom_topic': '/odom',
+        #             'publish_tf': True,
+        #             'base_frame_id': 'base_link',
+        #             'odom_frame_id': 'odom',
+        #             'init_pose_from_topic': '',
+        #             'freq': 20.0}],
+        #     ),
+
         launch_ros.actions.Node(
-                package='rf2o_laser_odometry',
-                executable='rf2o_laser_odometry_node',
-                name='rf2o_laser_odometry',
-                output='screen',
-                parameters=[{
-                    'laser_scan_topic': '/scan',
-                    'odom_topic': '/odom',
-                    'publish_tf': True,
-                    'base_frame_id': 'base_link',
-                    'odom_frame_id': 'odom',
-                    'init_pose_from_topic': '',
-                    'freq': 20.0}],
+            package='imu_pkg',
+            namespace='imu_pkg',
+            executable='imu_node',
+            name='imu_node'
             )
 
     ])

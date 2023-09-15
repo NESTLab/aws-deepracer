@@ -8,8 +8,12 @@ loginfo() {
     YELLOWB="\033[1;33m"
     RESET="\033[0m"
 
-    echo -e "${!1}APPTAINER BUILD:    ${2}${RESET}"
+    echo -e "${!1}ARGOS INITIALIZATION:    ${2}${RESET}"
 }
+
+
+### Run in non-interactive mode ###
+export DEBIAN_FRONTEND=noninteractive
 
 ### Terminate on errors ###
 set -e
