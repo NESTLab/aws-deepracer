@@ -20,11 +20,11 @@ set -e
 
 ### Update and upgrade packages ###
 loginfo "YELLOWB" "Updating and upgrading packages..."
-apt update && apt upgrade -qy
+sudo apt update && apt upgrade -qy
 
 ### Install dependencies ###
 loginfo "YELLOWB" "Installing dependencies..."
-apt install -qy git wget build-essential cmake libfreeimage-dev libfreeimageplus-dev \
+sudo apt install -qy git wget build-essential cmake libfreeimage-dev libfreeimageplus-dev \
     qt5-default freeglut3-dev libxi-dev libxmu-dev liblua5.3-dev lua5.3
 
 ### Install ARGoS ###

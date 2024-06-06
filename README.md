@@ -48,7 +48,7 @@ For this subsection, you need to connect to the vehicle via SSH.
     cd /home/deepracer/deepracer_nav2_ws/aws-deepracer
     ./initialize_deepracer.sh
     ```
->:information_source: After running the script, the `deepracer-core` service is disabled, so you will not be able to access the vehicle control page any longer. To access it again, see the [instructions below](#how-to-calibrate-vehicle-ie-how-to-reactivate-the-vehicle-control-page).
+>:information_source: After running the script, the `deepracer-core` service is disabled, so you will not be able to access the vehicle control page any longer. To access it again, see the [instructions below](#calibrating-the-vehicle-ie-how-to-reactivate-the-vehicle-control-page).
 3. Manually add the `ROS_DOMAIN_ID` to `.bashrc`. This ID should match *at most the last 2 digits* of the vehicle's IP address (leave any leading 0s out).
     ```bash
     # in the vehicle's .bashrc
@@ -64,7 +64,7 @@ Skip this subsection if you intend to only use the AWS DeepRacers with ROS 2 wit
 
 Connect to the vehicle via SSH, then run the `initialize_argos.sh` script. This will install ARGoS and the `argos3-deepracer` plugin on the vehicle. **Do not run this script on your machine.**
 ```
-cd /home/deepracer/
+cd /home/deepracer/deepracer_nav2_ws/aws-deepracer
 ./initialize_argos.sh
 ```
 
