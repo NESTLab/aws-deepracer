@@ -119,14 +119,36 @@ loginfo "YELLOWB" "Setting up access to IMU..."
 sudo usermod -aG i2c deepracer # the i2c group already has access, so just add the `deepracer` user
 
 
-### Adding source files in .bashrc ###
-loginfo "YELLOWB" "Adding source files to .bashrc..."
+### Installing convenience scripts ###
+
+# Copy executables to be global binaries
+mkdir -p ${HOME}/.local/bin
+cp --preserve=mode setup/bin/start-ros-service ${HOME}/.local/bin/start-ros-service
+cp --preserve=mode setup/bin/stop-ros-service ${HOME}/.local/bin/stop-ros-service
+
+# Copy internal executable scripts (not intended for users)
+mkdir -p ${HOME}/.local/libexec
+cp --preserve=mode setup/libexec/start_ros.sh ${HOME}/.local/libexec/start_ros.sh
+cp --preserve=mode setup/libexec/start_ros_evo.sh ${HOME}/.local/libexec/start_ros_evo.sh
+
+# Create convenience service file to run ROS 2 nodes
+mkdir -p ${HOME}/.config/systemd/user
+cp setup/service/start-ros.service ${HOME}/.config/systemd/user/start-ros.service
+cp setup/service/start-ros-evo.service ${HOME}/.config/systemd/user/start-ros-evo.service
+systemctl --user daemon-reload
+
+
+### Adding source files and variables to .bashrc ###
+loginfo "YELLOWB" "Adding source files and variables to .bashrc..."
 
 echo "" >> ~/.bashrc
 echo "# ROS source files" >> ~/.bashrc
 echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
 echo "source /home/deepracer/deepracer_nav2_ws/aws-deepracer/install/setup.bash" >> ~/.bashrc
 
+echo "" >> ~/.bashrc
+echo "# Updated PATH locations" >> ~/.bashrc
+echo "export PATH=${HOME}/.local/bin:${PATH}" >> ~/.bashrc
 
 ### Completion ###
 loginfo "GREENB" "Initialization complete!"

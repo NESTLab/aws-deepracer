@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
 systemctl stop --user start-ros.service
+systemctl stop --user start-ros-evo.service

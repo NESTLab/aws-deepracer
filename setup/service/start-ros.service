@@ -1,5 +1,5 @@
 [Unit]
-Description=Run AWS-DeepRacer ROS nodes for the base module
+Description=AWS-DeepRacer ROS nodes for the base module
 After=network.target
 
 [Service]
