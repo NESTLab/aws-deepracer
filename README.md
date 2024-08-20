@@ -60,7 +60,7 @@ For this subsection, you need to connect to the vehicle via SSH.
     ```
 
 ### ARGoS setup
-Skip this subsection if you intend to only use the AWS DeepRacers with ROS 2 without ARGoS support. Before proceeding, ensure that the [argos3-deepracer plugin](https://github.com/NESTLab/argos3-deepracer) is installed on your machine.
+Skip this subsection if you intend to only use the AWS DeepRacers with ROS 2 without ARGoS support. If you do, before proceeding, ensure that the [argos3-deepracer plugin](https://github.com/NESTLab/argos3-deepracer) is installed on your machine.
 
 Connect to the vehicle via SSH, then run the `initialize_argos.sh` script. This will install ARGoS and the `argos3-deepracer` plugin on the vehicle. **Do not run this script on your machine.**
 ```
@@ -69,6 +69,13 @@ cd /home/deepracer/deepracer_nav2_ws/aws-deepracer
 ```
 
 ## Usage instructions
+
+### Build ROS 2 packages
+In the [ROS 2 setup section](#ros-2-setup), the packages have been built once already. If you want to rebuild the packages, simply go to the `aws-deepracer` directory and do `colcon build`:
+```
+cd /home/deepracer/deepracer_nav2_ws/aws-deepracer
+colcon build
+```
 
 ### Calibrating the vehicle (*i.e.*, how to reactivate the vehicle control page?)
 To calibrate the vehicle and/or access other vehicle settings, you will need to do it through a web browser using the vehicle's IP address (like in the [Preliminary setup](#preliminary-setup)). Because the service that enables the browser interface will have been disabled in the [ROS 2 setup](#ros-2-setup), you will need to start it on the vehicle:
@@ -101,7 +108,13 @@ sudo systemctl start deepracer-core.service
 ```
 This service runs everything as `root`, which means that any additional ROS 2 nodes launched by non-`root` users *will not be able to see the topics by the nodes launched by the service*. The only way to make it work is to then run all ROS 2 nodes as `root`, which is a [bad idea&trade;](https://answers.ros.org/question/11300/running-ros-as-a-root-user/). The service actually runs code from the [`aws-deepracer-launcher`](https://github.com/aws-deepracer/aws-deepracer-launcher) repository, so you can find more information there.
 
+### Running the AWS DeepRacer using ARGoS controllers
+TODO
+
 ## Notes
 - After running `initialize_deepracer.sh`, all but one LED indicator light will be turned off on the compute module. Any instructions from the official AWS channels regarding those LEDs are no longer applicable, so just keep that in mind. The lights have been turned off because the `deepracer-core` service has been disabled, for reasons listed in the [Usage instructions](#usage-instructions).
 - When following the instructions on the official AWS DeepRacer repositories, *avoid running the code as `root`*. The instructions above have been created to ensure that no `root` access is needed ever to run the ROS 2 nodes. If you have permission issues running the robot's sensor/actuator ROS 2 nodes (`servo_node`, `imu_node`, `camera_node` etc.) without `root` access, please create an issue.
 - While there are ROS 2 packages catered for the AWS DeepRacer provided in the `/opt/aws/deepracer` directory, some of them are outdated so it's easier to clone the appropriate versions and build them from source. This allows the user (you) to maintain the code base as desired.
+
+## Troubleshooting
+- IMU node doesn't start properly: do `i2cdetect -y -r 1` to see if the address 68 is detected. If not, restart the vehicle.

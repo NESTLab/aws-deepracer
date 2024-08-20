@@ -1,0 +1,8 @@
+[Unit]
+Description=Run AWS-DeepRacer ROS nodes for the Evo module
+After=network.target
+
+[Service]
+ExecStart=%h/.local/libexec/start_ros_evo.sh
+Type=simple
+Restart=no

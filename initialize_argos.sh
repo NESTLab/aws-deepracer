@@ -20,7 +20,7 @@ set -e
 
 ### Update and upgrade packages ###
 loginfo "YELLOWB" "Updating and upgrading packages..."
-sudo apt update && apt upgrade -qy
+sudo apt update && sudo apt upgrade -qy
 
 ### Install dependencies ###
 loginfo "YELLOWB" "Installing dependencies..."

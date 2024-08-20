@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Check arguments
+if [[ $# -eq 0 ]];
+then
+    echo "No arguments supplied: please provide: 1. the desired ROS_DOMAIN_ID (int) and 2. a flag on whether the Evo version is used (bool)."
+    exit
+fi
+
+# Collect arguments
+RDI=$1 # ROS_DOMAIN_ID
+EVO=$2 # whether to start nodes for the Evo module
+
+#####################################################
+# Export ROS domain ID
+
+export ROS_DOMAIN_ID=${RDI}
+echo "ROS_DOMAIN_ID set to ${RDI}"
+
+#####################################################
+# Restart ROS daemon (ensures no discovery ambiguity)
+
+ros2 daemon stop
+ros2 daemon start
+
+#####################################################
+# Activate the service
+
+if [[ "${EVO}" == "true" || "${EVO}" == 1 ]];
+then
+    echo -e "Starting ROS nodes for the Evo module...\n"
+
+    systemctl --user start start-ros-evo.service
+    systemctl --user status start-ros-evo.service
+else
+    echo -e "Starting ROS nodes for the base module...\n"
+
+    systemctl --user start start-ros.service
+    systemctl --user status start-ros.service
+fi
+
+#####################################################
