@@ -17,7 +17,7 @@ To setup the AWS DeepRacer, there are 3 main steps: [Preliminary setup](#prelimi
 If the vehicle has an IP address set up already and you can log in with SSH, you can skip this subsection and proceed to the [ROS 2 setup](#ros-2-setup). Otherwise, if the vehicle is new or if it has been reset, proceed with the following instructions. These self-sufficient instructions are extracted from this [guide](/media/aws_deepracer_and_sensor_guide.pdf).
 
 1. Before turning on the vehicle, ensure that all sensors are plugged in to the USB ports (more details in the provided guide). **At the very least, a camera should be plugged into a USB port on the compute module and be kept plugged in at all times.** This is to prevent the pre-installed `deepracer-core` service from logging large amounts of missing sensor errors, eventually using up the device storage.
-2. Turn on the compute module. Neither the vehicle nor the compute battery need to be charged or plugged in; you can just use the wall adapter to power the compute module directly.
+2. Turn on the compute module. Neither the motor battery nor the compute battery need to be charged; you can just use the wall adapter to power the compute module directly.
 3. Let the compute module load for around 3 minutes, or until the power indicator light turns blue. Then, connect a micro USB cable from your machine to the vehicle.
 4. On your machine, ensure that it's not connected to the internet. Then go to the `deepracer.aws` URL on your web browser. A warning page about an unsafe connection may show up, but you can ignore and proceed (there should be a button for you to accept the risk and proceed).
 5. A new page will show up displaying the device console, asking for a password. If this is a new vehicle, the password is found underneath the vehicle. Otherwise, you can find the password from the [AWS DeepRacers page from the NESTLab Wiki](https://www.nestlab.net/wiki/robots/awsracers).
@@ -109,7 +109,21 @@ sudo systemctl start deepracer-core.service
 This service runs everything as `root`, which means that any additional ROS 2 nodes launched by non-`root` users *will not be able to see the topics by the nodes launched by the service*. The only way to make it work is to then run all ROS 2 nodes as `root`, which is a [bad idea&trade;](https://answers.ros.org/question/11300/running-ros-as-a-root-user/). The service actually runs code from the [`aws-deepracer-launcher`](https://github.com/aws-deepracer/aws-deepracer-launcher) repository, so you can find more information there.
 
 ### Running the AWS DeepRacer using ARGoS controllers
-TODO
+Here we use the example controller `deepracer_hello_world` provided in the [`argos3-deepracer`](https://github.com/NESTLab/argos3-deepracer) repository, where it has a corresponding configuration file `hello_world_config.argos` and the controller is given a `drhw` ID in the file. Then, to run the controller simply execute the following.
+```
+# Start service to run all the ROS nodes (the ARGoS controller requires the ROS drivers)
+start-ros-service <DESIRED-ROS-DOMAIN-ID> <EVO-OR-BASE-BOOL> # this runs the start-ros service
+
+# Run the controller
+cd ${HOME}/argos3-deepracer
+build/testing/deepracer_hello_world -c src/testing/hello_world_config.argos -i drhw
+```
+When you're done with controller, you can kill the ROS nodes.
+```
+stop-ros-service
+```
+
+>:information_source: A useful tool to debug the ROS nodes is through `systemctl` and `journalctl` commands (since the nodes are started using a service). For example, you can check if the service is active by doing `systemctl status --user start-ros` or `journalctl --user-unit start-ros`.
 
 ## Notes
 - After running `initialize_deepracer.sh`, all but one LED indicator light will be turned off on the compute module. Any instructions from the official AWS channels regarding those LEDs are no longer applicable, so just keep that in mind. The lights have been turned off because the `deepracer-core` service has been disabled, for reasons listed in the [Usage instructions](#usage-instructions).
