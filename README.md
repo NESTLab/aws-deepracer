@@ -92,9 +92,9 @@ Convenience scripts have been installed in which only the core driver nodes are 
 # Execute command to run all the driver nodes
 start-ros-service <DESIRED-ROS-DOMAIN-ID> <EVO-OR-BASE-BOOL> # this runs the start-ros service
 ```
-This takes care of the vehicle's components, which means you only need to run the other ROS nodes that you want to control the robot. For example, you can create a launch file that contains `amcl` and `teleop` nodes which can be run whenever the service is up.
+This takes care of the vehicle's core components, which means you only need to run remaining ROS nodes required for the robot to actuate or sense. For example, running a launch file that contains _only_ the `amcl` and `teleop` nodes will provide localization and tele-operation capabilities.
 
-Once you're done (or if you want to reset the drivers), you can kill the ROS nodes.
+Once you're done (or if you want to reset the drivers), you can stop the service.
 ```
 stop-ros-service
 ```
