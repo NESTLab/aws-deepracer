@@ -49,12 +49,7 @@ For this subsection, you need to connect to the vehicle via SSH.
     ./initialize_deepracer.sh
     ```
 >:information_source: After running the script, the `deepracer-core` service is disabled, so you will not be able to access the vehicle control page any longer. To access it again, see the [instructions below](#calibrating-the-vehicle-ie-how-to-reactivate-the-vehicle-control-page).
-3. Manually add the `ROS_DOMAIN_ID` to `.bashrc`. This ID should match *at most the last 2 digits* of the vehicle's IP address (leave any leading 0s out).
-    ```bash
-    # in the vehicle's .bashrc
-    export ROS_DOMAIN_ID=<HOST-ID> # e.g., if IP=192.168.1.103, then replace <HOST-ID> with 3; if 192.168.1.23, then replace with 23
-    ```
-4. Reboot the vehicle:
+3. Reboot the vehicle:
     ```
     sudo reboot
     ```
@@ -77,7 +72,7 @@ cd /home/deepracer/deepracer_nav2_ws/aws-deepracer
 colcon build
 ```
 
-### Calibrating the vehicle (*i.e.*, how to reactivate the vehicle control page?)
+### Calibrating the vehicle (*i.e.*, how to reactivate the AWS console/vehicle control page?)
 To calibrate the vehicle and/or access other vehicle settings, you will need to do it through a web browser using the vehicle's IP address (like in the [Preliminary setup](#preliminary-setup)). Because the service that enables the browser interface will have been disabled in the [ROS 2 setup](#ros-2-setup), you will need to start it on the vehicle:
 ```
 sudo systemctl start deepracer-core.service
@@ -91,6 +86,20 @@ sudo systemctl stop deepracer-core.service
 ```
 
 ### Running ROS 2 nodes for autonomous navigation (w/o deep RL)
+#### Recommended method
+Convenience scripts have been installed in which only the core driver nodes are run, _i.e.,_ IMU, drivetrain, camera, and LIDAR (only those with Evo addons). All you need to do is to first execute the following.
+```
+# Execute command to run all the driver nodes
+start-ros-service <DESIRED-ROS-DOMAIN-ID> <EVO-OR-BASE-BOOL> # this runs the start-ros service
+```
+This takes care of the vehicle's components, which means you only need to run the other ROS nodes that you want to control the robot. For example, you can create a launch file that contains `amcl` and `teleop` nodes which can be run whenever the service is up.
+
+Once you're done (or if you want to reset the drivers), you can kill the ROS nodes.
+```
+stop-ros-service
+```
+
+#### Legacy method
 You can follow the instructions provided by the AWS in the `deepracer_*` folders (of this repository), but run the nodes *without* `root` access. A Hello World launch file that you can start off with is the `deepracer.launch.py` launch file:
 ```
 ros2 launch deepracer_bringup deepracer.launch.py
@@ -101,7 +110,7 @@ You can run other ROS 2 nodes that you may need (*e.g.*, `amcl`, `teb_local_plan
 Technically, you should be able to run nodes that use deep reinforcement learning models to drive your vehicle. However, if you use the nodes provided by AWS they may not work out-of-the-box without `root` access.
 
 ### Running ROS 2 nodes for autonomous navigation (w/ deep RL)
-If you need to implement deep reinforcement learning models using AWS-provided nodes (*i.e.*, via the vehicle control page) to drive your vehicle, you can just restart the `deepracer-core` service.
+If you need to implement deep reinforcement learning models using the AWS-provided nodes (*i.e.*, via the vehicle control page) to drive your vehicle, you can just restart the `deepracer-core` service.
 ```
 sudo systemctl enable deepracer-core.service # for launching at startup
 sudo systemctl start deepracer-core.service
@@ -111,14 +120,14 @@ This service runs everything as `root`, which means that any additional ROS 2 no
 ### Running the AWS DeepRacer using ARGoS controllers
 Here we use the example controller `deepracer_hello_world` provided in the [`argos3-deepracer`](https://github.com/NESTLab/argos3-deepracer) repository, where it has a corresponding configuration file `hello_world_config.argos` and the controller is given a `drhw` ID in the file. Then, to run the controller simply execute the following.
 ```
-# Start service to run all the ROS nodes (the ARGoS controller requires the ROS drivers)
+# Execute command to run all the driver nodes (the ARGoS controller requires the ROS drivers)
 start-ros-service <DESIRED-ROS-DOMAIN-ID> <EVO-OR-BASE-BOOL> # this runs the start-ros service
 
 # Run the controller
 cd ${HOME}/argos3-deepracer
 build/testing/deepracer_hello_world -c src/testing/hello_world_config.argos -i drhw
 ```
-When you're done with controller, you can kill the ROS nodes.
+When you're done with the controller, you can kill the ROS nodes.
 ```
 stop-ros-service
 ```
